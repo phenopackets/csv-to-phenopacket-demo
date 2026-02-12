@@ -320,7 +320,7 @@ def build_family_from_members(family_id: str, members: List[FamilyMember]) -> Fa
 
 def write_family_to_file(family: Family, output_directory: str):
     """Write Family phenopacket to JSON file."""
-    output_path = os.path.join(output_directory, f'{family.id}_FAMILY.json')
+    output_path = os.path.join(output_directory, f'{family.id}_PROBAND.json')
     with open(output_path, 'w') as f:
         family_json = MessageToJson(family)
         f.write(family_json)
@@ -361,7 +361,7 @@ def main():
     for family_id, members in families.items():
         family = build_family_from_members(family_id, members)
         write_family_to_file(family, args.output_directory)
-        print(f"  Created {family_id}_FAMILY.json")
+        print(f"  Created {family_id}_PROBAND.json")
 
     print(f"\nCompleted! {len(families)} files created in {args.output_directory}/")
 
