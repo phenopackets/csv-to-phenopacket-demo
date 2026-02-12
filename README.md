@@ -7,8 +7,8 @@ Phenopackets from CSV files.
 Running
 ---
 To run the demo, you will either need to have the minimum python version and dependencies, as listed in the
-`pyproject.toml` installed on your system, use a virtual environment, or best of all use `uv`. To run using
-`uv` from the project root:
+`pyproject.toml` installed on your system, use a virtual environment, or best of all use `uv`. `uv` can be installed
+from https://docs.astral.sh/uv/. To run using `uv` from the project root:
 
 ```shell
 uv run csv_to_phenopackets.py families.csv output
