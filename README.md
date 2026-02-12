@@ -25,6 +25,7 @@ from https://adoptium.net/en-GB/temurin/releases or https://www.oracle.com/java/
 ```shell
 wget https://github.com/phenopackets/phenopacket-tools/releases/download/v1.0.0-RC3/phenopacket-tools-cli-1.0.0-RC3-distribution.zip
 unzip phenopacket-tools-cli-1.0.0-RC3-distribution.zip
+rm phenopacket-tools-cli-1.0.0-RC3-distribution.zip
 ```
 
 To validate the output files, run:
