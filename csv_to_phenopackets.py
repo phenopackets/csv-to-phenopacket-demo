@@ -201,12 +201,18 @@ def parse_row_to_family_member(row: Dict[str, Any], id_key: str) -> FamilyMember
     individual_id = row[id_key]
 
     # Parse family ID and role
-    match = re.match(r'^(.+)_(MOTHER|FATHER|PROBAND|SIBLING)', individual_id)
+    match = re.match(r'^(.+)_(.+)$', individual_id)
     if not match:
         raise ValueError(f"Invalid ID format: {individual_id}")
 
     family_id = match.group(1)
-    role = match.group(2)
+    sample_id = match.group(2)
+
+    relationship = row["RELATIONSHIP TO PROBAND"].strip().lower()
+    if relationship == "self":
+        role = "PROBAND"
+    else:
+        role = relationship.upper()
 
     # Map sex and affected status
     sex = row.get('SEX', 'UNKNOWN_SEX').upper()
@@ -215,7 +221,7 @@ def parse_row_to_family_member(row: Dict[str, Any], id_key: str) -> FamilyMember
     # Build phenotypic features
     hpo_string = row.get('HPO PRESENT', '')
     phenotypic_features = parse_hpo_terms(hpo_string)
-
+    
     # Build time element (age of onset)
     time_element = None
     age_onset = row.get('AGE OF ONSET (yrs)', '')
@@ -223,13 +229,13 @@ def parse_row_to_family_member(row: Dict[str, Any], id_key: str) -> FamilyMember
         time_element = TimeElement(age=Age(iso8601duration=f"P{age_onset}Y"))
 
     # Build interpretations
-    interpretations = parse_variant_interpretations(row, individual_id, affected)
+    interpretations = parse_variant_interpretations(row, sample_id, affected)
 
     # Build phenopacket
     phenopacket = Phenopacket(
         id=f"{family_id}_{role}",
         subject=Individual(
-            id=individual_id,
+            id=sample_id,
             sex=Sex.Value(sex),
             time_at_last_encounter=time_element
         ),
@@ -244,7 +250,7 @@ def parse_row_to_family_member(row: Dict[str, Any], id_key: str) -> FamilyMember
 
     return FamilyMember(
         family_id=family_id,
-        individual_id=individual_id,
+        individual_id=sample_id,
         role=role,
         sex=sex,
         affected='MISSING' if affected == 'UNKNOWN' else affected,
